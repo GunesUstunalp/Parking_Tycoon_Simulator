@@ -13,7 +13,6 @@ public class Walking : MonoBehaviour
     void Start()
     {
         animator = GetComponentInChildren<Animator>();
-        speed = 1;
     }
 
     void Update()
@@ -29,11 +28,9 @@ public class Walking : MonoBehaviour
         double angle = Math.Asin(slopeZ);
         angle = angle * 180 / Math.PI;
 
-        Debug.Log(angle);
+        //Vector3 to = new Vector3(0, (float)angle, 0);
 
-        Vector3 to = new Vector3(0, (float)angle, 0);
-
-        transform.eulerAngles = Vector3.Lerp(transform.rotation.eulerAngles, to, Time.deltaTime);
+        //transform.eulerAngles = Vector3.Lerp(transform.rotation.eulerAngles, to, Time.deltaTime);
 
         if (distance > 0.01)
         {
