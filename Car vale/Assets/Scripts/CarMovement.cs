@@ -11,7 +11,8 @@ public class CarMovement : MonoBehaviour
     public bool turn = true;
     public bool soundActive = false;
     public bool collided = false;
-
+    public float rightMultiplier = 1.35f;
+    public float leftMultiplier = 1.35f;
     private float timeCountFours = 0.0f;
     public float timeMultiplierFours = 1.0f;
 
@@ -23,7 +24,7 @@ public class CarMovement : MonoBehaviour
 
     public Rigidbody rb;
     public Transform car;
-    public float speed = 17;
+    public float speed = 13.0f;
     public Transform carRight;
     public Transform carLeft;
     //public GameObject smoke;
@@ -84,14 +85,14 @@ public class CarMovement : MonoBehaviour
                 transform.Translate(forward * speed * Time.deltaTime);
                 if (iO.getD() || Input.GetKey("d"))
                 {
-                    Quaternion deltaRotationRight = Quaternion.Euler(rotationRight * Time.deltaTime);
-                    rb.MoveRotation(rb.rotation * deltaRotationRight);
+                    Quaternion deltaRotationRight = Quaternion.Euler(rotationRight * Time.deltaTime * rightMultiplier);
+                    rb.MoveRotation(rb.rotation * deltaRotationRight );
                 }
 
                 if (iO.getA() || Input.GetKey("a"))
                 {
-                    Quaternion deltaRotationLeft = Quaternion.Euler(rotationLeft * Time.deltaTime);
-                    rb.MoveRotation(rb.rotation * deltaRotationLeft);
+                    Quaternion deltaRotationLeft = Quaternion.Euler(rotationLeft * Time.deltaTime * leftMultiplier);
+                    rb.MoveRotation(rb.rotation * deltaRotationLeft );
                 }
             }
             else if (iO.getS() || Input.GetKey("s"))
@@ -101,14 +102,14 @@ public class CarMovement : MonoBehaviour
                 transform.Translate(backward * speed * Time.deltaTime);
                 if (iO.getA() || Input.GetKey("a"))
                 {
-                    Quaternion deltaRotationRight = Quaternion.Euler(rotationRight * Time.deltaTime);
-                    rb.MoveRotation(rb.rotation * deltaRotationRight);
+                    Quaternion deltaRotationRight = Quaternion.Euler(rotationRight * Time.deltaTime * leftMultiplier);
+                    rb.MoveRotation(rb.rotation * deltaRotationRight );
                 }
 
                 if (iO.getD() || Input.GetKey("d"))
                 {
-                    Quaternion deltaRotationLeft = Quaternion.Euler(rotationLeft * Time.deltaTime);
-                    rb.MoveRotation(rb.rotation * deltaRotationLeft);
+                    Quaternion deltaRotationLeft = Quaternion.Euler(rotationLeft * Time.deltaTime * rightMultiplier);
+                    rb.MoveRotation(rb.rotation * deltaRotationLeft );
                 }
             }
             else
@@ -155,7 +156,7 @@ public class CarMovement : MonoBehaviour
             AudioManager aManager = (AudioManager)audioM.GetComponent(typeof(AudioManager));
             aManager.carCrashTurnOn();
         }
-        if (collision.gameObject.tag == "environment")
+        if (collision.gameObject.tag == "Environment")
         {
             collided = true;
             if (!flasherSound.isPlaying)
