@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public int dailyParkCount = 0;
     public int time = 0;
     public float timeFloatingVersion = 0.0f;
     private float totalMoney = 0.0f;

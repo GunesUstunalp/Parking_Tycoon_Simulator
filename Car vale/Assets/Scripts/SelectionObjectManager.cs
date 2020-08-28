@@ -23,14 +23,19 @@ public class SelectionObjectManager : MonoBehaviour
                // Debug.Log("selection name " + selection);
                if(cM != null)
                 {
-                    cM.turn = false;
+                    //cM.turn = false;
                 }
                 GameObject car = hit.transform.gameObject;
                 cM = (CarMovement)car.GetComponent(typeof(CarMovement));
-                cM.turn = true;
-                GameObject audioM = GameObject.Find("AudioHandler");
-                AudioManager aManager = (AudioManager)audioM.GetComponent(typeof(AudioManager));
-                aManager.carEnterTurnOn();
+                Debug.Log("cm turn = " + cM.turn);
+                if (cM.turn == false)
+                {
+                    //Debug.Log("CmTurn False");
+                    GameObject audioM = GameObject.Find("AudioHandler");
+                    AudioManager aManager = (AudioManager)audioM.GetComponent(typeof(AudioManager));
+                    aManager.carEnterTurnOn();
+                    cM.turn = true;
+                }
             }
             // car = hit.collider.GetComponent() as gameObject;
             // Debug.Log(car.name + " name ");

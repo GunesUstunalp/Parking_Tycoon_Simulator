@@ -4,19 +4,27 @@ using UnityEngine;
 
 public class CarMovement : MonoBehaviour
 {
+
     // public bool active = true;
     public AudioSource idleSound;
+    public AudioSource flasherSound;
     public bool turn = true;
     public bool soundActive = false;
-    
+    public bool collided = false;
+    public float rightMultiplier = 1.35f;
+    public float leftMultiplier = 1.35f;
+    private float timeCountFours = 0.0f;
+    public float timeMultiplierFours = 1.0f;
+
     public GameObject frontLights;
     public GameObject backLights;
     public GameObject smoke;
     public GameObject gasSmoke;
+    public GameObject fours;
 
     public Rigidbody rb;
     public Transform car;
-    public float speed = 17;
+    public float speed = 13.0f;
     public Transform carRight;
     public Transform carLeft;
     //public GameObject smoke;
@@ -29,8 +37,14 @@ public class CarMovement : MonoBehaviour
     //int whichRotation = 0; // 0 for noone, 1 for right, 1 for left
     void FixedUpdate()
     {
+        GameObject gameManager = GameObject.Find("GameManager");
+        InputManager iO = (InputManager)gameManager.GetComponent(typeof(InputManager));
         if (turn)
         {
+            collided = false;
+            fours.SetActive(false);
+            if (flasherSound.isPlaying)
+                flasherSound.Stop();
             if (!soundActive)
             {
                 idleSound.Play();
@@ -39,15 +53,15 @@ public class CarMovement : MonoBehaviour
             smoke.SetActive(true);
             frontLights.SetActive(true);
             backLights.SetActive(true);
-
-            if (Input.GetKey("d"))
+            
+            if (iO.getD() || Input.GetKey("d")) 
             {
                 Vector3 temp = car.eulerAngles;
                 temp.y += 30.0f;
                 carLeft.rotation = Quaternion.Euler(temp);
                 carRight.rotation = Quaternion.Euler(temp);
             }
-            else if (Input.GetKey("a"))
+            else if (iO.getA() || Input.GetKey("a"))
             {
                 Vector3 temp = car.eulerAngles;
                 temp.y += -30.0f;
@@ -64,38 +78,38 @@ public class CarMovement : MonoBehaviour
             }
 
             //if (Input.GetKey("w"))
-            if (Input.GetButton("Forward")) 
+            if (iO.getW() || Input.GetKey("w")) 
             {
                 //smoke.SetActive(true);
                 gasSmoke.SetActive(true);
                 transform.Translate(forward * speed * Time.deltaTime);
-                if (Input.GetKey("d"))
+                if (iO.getD() || Input.GetKey("d"))
                 {
-                    Quaternion deltaRotationRight = Quaternion.Euler(rotationRight * Time.deltaTime);
-                    rb.MoveRotation(rb.rotation * deltaRotationRight);
+                    Quaternion deltaRotationRight = Quaternion.Euler(rotationRight * Time.deltaTime * rightMultiplier);
+                    rb.MoveRotation(rb.rotation * deltaRotationRight );
                 }
 
-                if (Input.GetKey("a"))
+                if (iO.getA() || Input.GetKey("a"))
                 {
-                    Quaternion deltaRotationLeft = Quaternion.Euler(rotationLeft * Time.deltaTime);
-                    rb.MoveRotation(rb.rotation * deltaRotationLeft);
+                    Quaternion deltaRotationLeft = Quaternion.Euler(rotationLeft * Time.deltaTime * leftMultiplier);
+                    rb.MoveRotation(rb.rotation * deltaRotationLeft );
                 }
             }
-            else if (Input.GetKey("s"))
+            else if (iO.getS() || Input.GetKey("s"))
             {
                 gasSmoke.SetActive(false);
                 //smoke.SetActive(true);
                 transform.Translate(backward * speed * Time.deltaTime);
-                if (Input.GetKey("a"))
+                if (iO.getA() || Input.GetKey("a"))
                 {
-                    Quaternion deltaRotationRight = Quaternion.Euler(rotationRight * Time.deltaTime);
-                    rb.MoveRotation(rb.rotation * deltaRotationRight);
+                    Quaternion deltaRotationRight = Quaternion.Euler(rotationRight * Time.deltaTime * leftMultiplier);
+                    rb.MoveRotation(rb.rotation * deltaRotationRight );
                 }
 
-                if (Input.GetKey("d"))
+                if (iO.getD() || Input.GetKey("d"))
                 {
-                    Quaternion deltaRotationLeft = Quaternion.Euler(rotationLeft * Time.deltaTime);
-                    rb.MoveRotation(rb.rotation * deltaRotationLeft);
+                    Quaternion deltaRotationLeft = Quaternion.Euler(rotationLeft * Time.deltaTime * rightMultiplier);
+                    rb.MoveRotation(rb.rotation * deltaRotationLeft );
                 }
             }
             else
@@ -111,14 +125,32 @@ public class CarMovement : MonoBehaviour
             gasSmoke.SetActive(false);
             frontLights.SetActive(false);
             backLights.SetActive(false);
+            if (collided)
+            {
+                timeCountFours += Time.deltaTime * timeMultiplierFours;
+                //Debug.Log(timeCountFours);
+                if((int) timeCountFours % 2 == 0)
+                {
+                    fours.SetActive(false);
+                   // timeCountFours = 0.0f;
+                }
+                else
+                {
+                    fours.SetActive(true);
+                }
+            }
         }
 
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+         
         if (collision.gameObject.tag == "car")
         {
+            collided = true;
+            if (!flasherSound.isPlaying)
+                flasherSound.Play();
             turn = false;
             GameObject audioM = GameObject.Find("AudioHandler");
             AudioManager aManager = (AudioManager)audioM.GetComponent(typeof(AudioManager));
@@ -126,6 +158,9 @@ public class CarMovement : MonoBehaviour
         }
         if (collision.gameObject.tag == "environment")
         {
+            collided = true;
+            if (!flasherSound.isPlaying)
+                flasherSound.Play();
             turn = false;
             GameObject audioM = GameObject.Find("AudioHandler");
             AudioManager aManager = (AudioManager)audioM.GetComponent(typeof(AudioManager));
