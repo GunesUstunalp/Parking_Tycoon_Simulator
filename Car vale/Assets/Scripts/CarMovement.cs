@@ -11,6 +11,7 @@ public class CarMovement : MonoBehaviour
     public bool turn = true;
     public bool soundActive = false;
     public bool collided = false;
+
     private float timeCountFours = 0.0f;
     public float timeMultiplierFours = 1.0f;
 
@@ -37,7 +38,6 @@ public class CarMovement : MonoBehaviour
     {
         GameObject gameManager = GameObject.Find("GameManager");
         InputManager iO = (InputManager)gameManager.GetComponent(typeof(InputManager));
-
         if (turn)
         {
             collided = false;
@@ -127,7 +127,7 @@ public class CarMovement : MonoBehaviour
             if (collided)
             {
                 timeCountFours += Time.deltaTime * timeMultiplierFours;
-                Debug.Log(timeCountFours);
+                //Debug.Log(timeCountFours);
                 if((int) timeCountFours % 2 == 0)
                 {
                     fours.SetActive(false);
