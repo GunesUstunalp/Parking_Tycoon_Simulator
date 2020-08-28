@@ -156,7 +156,7 @@ public class CarMovement : MonoBehaviour
             AudioManager aManager = (AudioManager)audioM.GetComponent(typeof(AudioManager));
             aManager.carCrashTurnOn();
         }
-        if (collision.gameObject.tag == "Environment")
+        if (collision.gameObject.tag == "environment")
         {
             collided = true;
             if (!flasherSound.isPlaying)
